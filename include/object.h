@@ -1,9 +1,11 @@
 typedef enum ObjectKind {
-    INTEGER
+    INTEGER,
+    FLOAT
 } object_kind_t ;
 
 typedef union ObjectData {
     int v_int;
+    float v_float;
 } object_data_t;
 
 typedef struct Object {
@@ -12,3 +14,5 @@ typedef struct Object {
 } object_t;
 
 object_t *new_integer(int value);
+
+object_t *new_float(float value);

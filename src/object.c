@@ -15,3 +15,17 @@ object_t *new_integer(int value) {
 
     return int_obj;
 }
+
+object_t *new_float(float value) {
+    object_t *float_obj = malloc(sizeof(object_t));
+
+    if (float_obj == NULL) {
+        printf("Memory Allocation for float object failed");
+        return NULL;
+    }
+
+    float_obj->kind = FLOAT;
+    float_obj->data.v_float = value;
+
+    return float_obj;
+}
