@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "../include/object.h"
 
 object_t *new_integer(int value) {
@@ -28,4 +29,29 @@ object_t *new_float(float value) {
     float_obj->data.v_float = value;
 
     return float_obj;
+}
+
+object_t *new_string(char *value) {
+    object_t *string_obj = malloc(sizeof(object_t));
+
+    if (string_obj == NULL) {
+        printf("Memory Allocation for float object failed\n");
+        return NULL;
+    }
+
+    int input_length = strlen(value);
+    char *string_copy = malloc(input_length + 1);
+    if (string_copy == NULL) {
+        printf("Memory allocation failed for string copy!\n");
+        free(string_obj);
+        printf("Memory freed successfully!\n");
+        return NULL;
+    }
+
+    strcpy(string_copy, value);
+
+    string_obj->kind = STRING;
+    string_obj->data.v_string = string_copy;
+
+    return string_obj;
 }
