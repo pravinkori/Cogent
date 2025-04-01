@@ -1,3 +1,6 @@
+#include <stdbool.h>
+#include <stddef.h>
+
 typedef struct Object object_t;
 
 typedef struct Vector {
@@ -41,3 +44,5 @@ object_t *new_string(char *value);
 object_t *new_vector(object_t *x, object_t *y, object_t *z);
 
 object_t *new_array(size_t size);
+
+bool array_set(object_t *array, size_t index, object_t *value);

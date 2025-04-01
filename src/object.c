@@ -98,3 +98,22 @@ object_t *new_array(size_t size) {
 
     return array_obj;
 }
+
+bool array_set(object_t *object, size_t index, object_t *value) {
+    if (object == NULL || value == NULL) {
+        fprintf(stderr, "");
+        return false;
+    }
+
+    if (object->kind != ARRAY) {
+        return false;
+    }
+
+    if (object->data.v_array.size <= index) {
+        return false;
+    }
+
+    object->data.v_array.elements[index] = value;
+
+    return true;
+};
