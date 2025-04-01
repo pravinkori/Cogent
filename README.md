@@ -13,7 +13,7 @@ Cogent is an experimental programming language and runtime environment designed 
 ### Technical Foundations
 
 - Written entirely in C
-- Custom object system with lightweight runtime
-- Reference-based garbage collection
+- A **simple object system** supporting integers, floats, strings, vectors, and arrays.
+- Reference-based garbage collection (upcoming).
 <!-- - Minimal runtime overhead -->
 <!-- - Potential for embedded systems and educational use -->
