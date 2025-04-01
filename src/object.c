@@ -1,7 +1,7 @@
+#include "../include/object.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "../include/object.h"
 
 object_t *new_integer(int value) {
     object_t *int_obj = malloc(sizeof(object_t));
@@ -74,4 +74,27 @@ object_t *new_vector(object_t *x, object_t *y, object_t *z) {
     printf("Vector created successfully: [%p, %p, %p]\n", x, y, z);
 
     return vector_obj;
+}
+
+object_t *new_array(size_t size) {
+    object_t *array_obj = malloc(sizeof(object_t));
+
+    if (array_obj == NULL) {
+        fprintf(stderr, "Error: Memory allocation failed for object_t (array).\n");
+        return NULL;
+    }
+
+    object_t **elements = calloc(size, sizeof(object_t *));
+    if (elements == NULL) {
+        fprintf(stderr, "Error: Memory allocation failed for array elements (size=%zu).\n", size);
+        free(array_obj);
+        return NULL;
+    }
+
+    array_obj->kind = ARRAY;
+
+    array_t array = {.size = size, .elements = elements};
+    array_obj->data.v_array = array;
+
+    return array_obj;
 }
