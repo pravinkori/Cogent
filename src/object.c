@@ -101,19 +101,40 @@ object_t *new_array(size_t size) {
 
 bool array_set(object_t *object, size_t index, object_t *value) {
     if (object == NULL || value == NULL) {
-        fprintf(stderr, "");
+        fprintf(stderr, "Error: NULL object or value passed to array_set().\n");
         return false;
     }
 
     if (object->kind != ARRAY) {
+        fprintf(stderr, "Error: Tried to use array_set() on a non-array object.\n");
         return false;
     }
 
     if (object->data.v_array.size <= index) {
+        fprintf(stderr, "Error: Index %zu out of bounds (array size: %zu).\n", index, object->data.v_array.size);
         return false;
     }
 
     object->data.v_array.elements[index] = value;
 
     return true;
+};
+
+object_t *array_get(object_t *object, size_t index) {
+    if (object == NULL) {
+        fprintf(stderr, "Error: NULL object passed to array_get().\n");
+        return NULL;
+    }
+
+    if (object->kind != ARRAY) {
+        fprintf(stderr, "Error: Tried to use array_get() on a non-array object.\n");
+        return NULL;
+    }
+
+    if (object->data.v_array.size <= index) {
+        fprintf(stderr, "Error: Index %zu out of bounds (array size: %zu).\n", index, object->data.v_array.size);
+        return NULL;
+    }
+
+    return object->data.v_array.elements[index];
 };
