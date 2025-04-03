@@ -44,7 +44,6 @@ object_t *new_string(char *value) {
     if (string_copy == NULL) {
         printf("Memory allocation failed for string copy!\n");
         free(string_obj);
-        printf("Memory freed successfully!\n");
         return NULL;
     }
 
@@ -138,3 +137,35 @@ object_t *array_get(object_t *object, size_t index) {
 
     return object->data.v_array.elements[index];
 };
+
+int print_length(object_t *object) {
+    if (object == NULL) {
+        return -1;
+    }
+
+    switch (object->kind) {
+    case INTEGER:
+        return 1;
+        break;
+
+    case FLOAT:
+        return 1;
+        break;
+
+    case STRING:
+        return strlen(object->data.v_string);
+        break;
+
+    case VECTOR3:
+        return 3;
+        break;
+
+    case ARRAY:
+        return object->data.v_array.size;
+        break;
+
+    default:
+        return -1;
+        break;
+    }
+}
