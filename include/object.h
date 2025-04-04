@@ -51,4 +51,4 @@ object_t *array_get(object_t *array, size_t index);
 
 int print_length(object_t *object);
 
-object_t *object_add(object_t *a, object_t *b);
+object_t *object_add(object_t *lhs, object_t *rhs);

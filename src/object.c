@@ -170,19 +170,19 @@ int print_length(object_t *object) {
     }
 }
 
-object_t *object_add(object_t *a, object_t *b) {
-    if (a == NULL || b == NULL) {
+object_t *object_add(object_t *lhs, object_t *rhs) {
+    if (lhs == NULL || rhs == NULL) {
         return NULL;
     }
 
-    switch (a->kind) {
+    switch (lhs->kind) {
     case INTEGER: {
-        switch (b->kind) {
+        switch (rhs->kind) {
         case INTEGER:
-            return new_integer(a->data.v_int + b->data.v_int);
+            return new_integer(lhs->data.v_int + rhs->data.v_int);
             break;
         case FLOAT:
-            return new_float((float)a->data.v_int + b->data.v_float);
+            return new_float((float)lhs->data.v_int + rhs->data.v_float);
             break;
         default:
             return NULL;
@@ -191,12 +191,12 @@ object_t *object_add(object_t *a, object_t *b) {
     }
 
     case FLOAT: {
-        switch (b->kind) {
+        switch (rhs->kind) {
         case INTEGER:
-            return new_float(a->data.v_float + (float)b->data.v_int);
+            return new_float(lhs->data.v_float + (float)rhs->data.v_int);
             break;
         case FLOAT:
-            return new_float(a->data.v_float + b->data.v_float);
+            return new_float(lhs->data.v_float + rhs->data.v_float);
             break;
         default:
             return NULL;
@@ -205,58 +205,63 @@ object_t *object_add(object_t *a, object_t *b) {
     }
 
     case STRING: {
-        if (b->kind != STRING) {
+        if (rhs->kind != STRING) {
             return NULL;
         }
-        size_t length = strlen(a->data.v_string) + strlen(b->data.v_string) + 1;
+        size_t length = strlen(lhs->data.v_string) + strlen(rhs->data.v_string) + 1;
 
-        char *newstring = calloc(sizeof(char *), length);
+        char *concat_string = calloc(sizeof(char *), length);
+        if (concat_string == NULL) {
+            fprintf(stderr, "Error: Memory allocation failed for concatinated string.\n");
+            return NULL;
+        }
 
-        strcat(newstring, a->data.v_string);
-        strcat(newstring, b->data.v_string);
+        strcat(concat_string, lhs->data.v_string);
+        strcat(concat_string, rhs->data.v_string);
 
-        object_t *object = new_string(newstring);
+        object_t *result_str = new_string(concat_string);
 
-        free(newstring);
+        free(concat_string);
 
-        return object;
+        return result_str;
     }
 
     case VECTOR3: {
-        if (b->kind != VECTOR3) {
+        if (rhs->kind != VECTOR3) {
             return NULL;
         }
 
-        return new_vector(
-            object_add(a->data.v_vector3.x, b->data.v_vector3.x),
-            object_add(a->data.v_vector3.y, b->data.v_vector3.y),
-            object_add(a->data.v_vector3.z, b->data.v_vector3.z));
+        object_t *x = object_add(lhs->data.v_vector3.x, rhs->data.v_vector3.x);
+        object_t *y = object_add(lhs->data.v_vector3.y, rhs->data.v_vector3.y);
+        object_t *z = object_add(lhs->data.v_vector3.z, rhs->data.v_vector3.z);
+
+        return new_vector(x, y, z);
     }
 
     case ARRAY: {
-        if (b->kind != ARRAY) {
+        if (rhs->kind != ARRAY) {
             return NULL;
         }
 
-        size_t length = a->data.v_array.size + b->data.v_array.size;
+        size_t total_size = lhs->data.v_array.size + rhs->data.v_array.size;
 
-        object_t *object = new_array(length);
+        object_t *result_arr = new_array(total_size);
 
-        for (size_t i = 0; i < a->data.v_array.size; i++) {
+        for (size_t i = 0; i < lhs->data.v_array.size; i++) {
             array_set(
-                object,
+                result_arr,
                 i,
-                array_get(a, i));
+                array_get(lhs, i));
         }
 
-        for (size_t i = 0; i < b->data.v_array.size; i++) {
+        for (size_t i = 0; i < rhs->data.v_array.size; i++) {
             array_set(
-                object,
-                i + a->data.v_array.size,
-                array_get(b, i));
+                result_arr,
+                i + lhs->data.v_array.size,
+                array_get(rhs, i));
         }
 
-        return object;
+        return result_arr;
     }
 
     default:
