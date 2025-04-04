@@ -50,3 +50,5 @@ bool array_set(object_t *array, size_t index, object_t *value);
 object_t *array_get(object_t *array, size_t index);
 
 int print_length(object_t *object);
+
+object_t *object_add(object_t *a, object_t *b);
