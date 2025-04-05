@@ -1,7 +1,9 @@
-#include "../include/object.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "../include/object.h"
+#include "assert.h"
 
 void refcount_dec(object_t *object) {
     if (object == NULL) {
@@ -36,13 +38,24 @@ void refcount_free(object_t *object) {
         break;
     }
     case VECTOR3: {
-        refcount_dec(object->data.v_vector3.x);
-        refcount_dec(object->data.v_vector3.y);
-        refcount_dec(object->data.v_vector3.z);
+        vector_t vec = object->data.v_vector3;
+        refcount_dec(vec.x);
+        refcount_dec(vec.y);
+        refcount_dec(vec.z);
+        break;
+    }
+    case ARRAY: {
+        array_t arr = object->data.v_array;
+        for (int i = 0; i < arr.size; i++) {
+            refcount_dec(arr.elements[i]);
+        }
+
+        free(object->data.v_array.elements);
         break;
     }
 
     default:
+        assert(false);
         break;
     }
 }
@@ -186,6 +199,11 @@ bool array_set(object_t *object, size_t index, object_t *value) {
     if (object->data.v_array.size <= index) {
         fprintf(stderr, "Error: Index %zu out of bounds (array size: %zu).\n", index, object->data.v_array.size);
         return false;
+    }
+
+    refcount_inc(value);
+    if (object->data.v_array.elements[index] != NULL) {
+        refcount_dec(object->data.v_array.elements[index]);
     }
 
     object->data.v_array.elements[index] = value;
