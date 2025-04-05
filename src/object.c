@@ -35,6 +35,12 @@ void refcount_free(object_t *object) {
         free(object);
         break;
     }
+    case VECTOR3: {
+        refcount_dec(object->data.v_vector3.x);
+        refcount_dec(object->data.v_vector3.y);
+        refcount_dec(object->data.v_vector3.z);
+        break;
+    }
 
     default:
         break;
@@ -131,6 +137,10 @@ object_t *new_vector(object_t *x, object_t *y, object_t *z) {
     }
 
     vector_obj->kind = VECTOR3;
+
+    refcount_inc(x);
+    refcount_inc(y);
+    refcount_inc(z);
     vector_obj->data.v_vector3 = (vector_t){.x = x, .y = y, .z = z};
 
     printf("Vector created successfully: [%p, %p, %p]\n", x, y, z);
