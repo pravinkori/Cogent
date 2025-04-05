@@ -3,8 +3,68 @@
 #include <stdlib.h>
 #include <string.h>
 
+void refcount_dec(object_t *object) {
+    if (object == NULL) {
+        return;
+    }
+
+    object->ref_count--;
+    if (object->ref_count == 0) {
+        refcount_free(object);
+    }
+
+    return;
+}
+
+void refcount_free(object_t *object) {
+    if (object == NULL) {
+        return;
+    }
+
+    switch (object->kind) {
+    case INTEGER: {
+        free(object);
+        break;
+    }
+    case FLOAT: {
+        free(object);
+        break;
+    }
+    case STRING: {
+        free(object->data.v_string);
+        free(object);
+        break;
+    }
+
+    default:
+        break;
+    }
+}
+
+void refcount_inc(object_t *object) {
+    if (object == NULL) {
+        return;
+    }
+
+    object->ref_count++;
+    return;
+}
+
+object_t *_new_object() {
+    object_t *object = calloc(1, sizeof(object_t));
+    if (object == NULL) {
+        fprintf(stderr, "Error: Memory allocation failed for object.\n");
+        return NULL;
+    }
+
+    object->ref_count = 1;
+
+    return object;
+}
+
 object_t *new_integer(int value) {
-    object_t *int_obj = malloc(sizeof(object_t));
+    // object_t *int_obj = malloc(sizeof(object_t));
+    object_t *int_obj = _new_object();
 
     if (int_obj == NULL) {
         printf("Memory Allocation for integer object failed");
@@ -18,7 +78,8 @@ object_t *new_integer(int value) {
 }
 
 object_t *new_float(float value) {
-    object_t *float_obj = malloc(sizeof(object_t));
+    // object_t *float_obj = malloc(sizeof(object_t));
+    object_t *float_obj = _new_object();
 
     if (float_obj == NULL) {
         printf("Memory Allocation for float object failed");
@@ -32,7 +93,8 @@ object_t *new_float(float value) {
 }
 
 object_t *new_string(char *value) {
-    object_t *string_obj = malloc(sizeof(object_t));
+    // object_t *string_obj = malloc(sizeof(object_t));
+    object_t *string_obj = _new_object();
 
     if (string_obj == NULL) {
         printf("Memory Allocation for float object failed\n");
@@ -61,7 +123,8 @@ object_t *new_vector(object_t *x, object_t *y, object_t *z) {
         return NULL;
     }
 
-    object_t *vector_obj = malloc(sizeof(object_t));
+    // object_t *vector_obj = malloc(sizeof(object_t));
+    object_t *vector_obj = _new_object();
     if (vector_obj == NULL) {
         printf("Memory allocation for vector failed\n");
         return NULL;
@@ -76,7 +139,8 @@ object_t *new_vector(object_t *x, object_t *y, object_t *z) {
 }
 
 object_t *new_array(size_t size) {
-    object_t *array_obj = malloc(sizeof(object_t));
+    // object_t *array_obj = malloc(sizeof(object_t));
+    object_t *array_obj = _new_object();
 
     if (array_obj == NULL) {
         fprintf(stderr, "Error: Memory allocation failed for object_t (array).\n");

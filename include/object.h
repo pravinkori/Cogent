@@ -33,6 +33,7 @@ typedef union ObjectData {
 typedef struct Object {
     object_kind_t kind;
     object_data_t data;
+    int ref_count;
 } object_t;
 
 object_t *new_integer(int value);
@@ -52,3 +53,7 @@ object_t *array_get(object_t *array, size_t index);
 int print_length(object_t *object);
 
 object_t *object_add(object_t *lhs, object_t *rhs);
+
+void refcount_inc(object_t *object);
+void refcount_dec(object_t *object);
+void refcount_free(object_t *object);
