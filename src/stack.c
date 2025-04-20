@@ -43,3 +43,19 @@ void stack_push(stack_t *stack, void *object) {
 
     return;
 }
+
+void *stack_pop(stack_t *stack) {
+    if (stack == NULL) {
+        fprintf(stderr, "Error: Attempted to pop from a NULL stack pointer.\n");
+        return NULL;
+    }
+
+    if (stack->count == 0) {
+        fprintf(stderr, "Warning: Stack underflow! Tried to pop from an empty stack.\n");
+        return NULL;
+    }
+    stack->count--;
+
+    printf("Popped element at index %zu: %p\n", stack->count, stack->data[stack->count]);
+    return stack->data[stack->count];
+}
