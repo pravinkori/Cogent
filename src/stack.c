@@ -59,3 +59,16 @@ void *stack_pop(stack_t *stack) {
     printf("Popped element at index %zu: %p\n", stack->count, stack->data[stack->count]);
     return stack->data[stack->count];
 }
+
+void stack_free(stack_t *stack) {
+    if (stack == NULL) {
+        fprintf(stderr, "Warning: Tried to free a NULL stack pointer. (Stack is empty)\n");
+        return;
+    }
+
+    if (stack->data != NULL) {
+        fprintf(stderr, "[stack_free] Freeing stack data with %zu elements.\n", stack->count);
+        free(stack->data);
+    }
+    free(stack);
+}
