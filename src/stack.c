@@ -21,3 +21,25 @@ stack_t *stack_new(size_t capacity) {
 
     return stack;
 }
+
+void stack_push(stack_t *stack, void *object) {
+    if (stack->count == stack->capacity) {
+        fprintf(stderr, "Error: Attempted to push to a NULL stack pointer.\n");
+
+        // Double stack capacity to avoid reallocing often
+        stack->capacity *= 2;
+
+        void **new_capacity = realloc(stack->data, stack->capacity * sizeof(void *));
+        if (new_capacity == NULL) {
+            stack->capacity /= 2;
+            fprintf(stderr, "Error: Failed to reallocate memory during stack expansion to %zu elements.\n", new_capacity);
+            exit(1);
+        }
+        stack->data = new_capacity;
+    }
+
+    stack->data[stack->count] = object;
+    stack->count++;
+
+    return;
+}
