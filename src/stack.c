@@ -72,3 +72,27 @@ void stack_free(stack_t *stack) {
     }
     free(stack);
 }
+
+void stack_remove_nulls(stack_t *stack) {
+    if (stack == NULL) {
+        fprintf(stderr, "Warning: Tried to clean a NULL stack.\n");
+        return;
+    }
+
+    size_t new_count = 0;
+
+    // Iterate through the stack and compact non-NULL pointers.
+    for (size_t i = 0; i < stack->count; ++i) {
+        if (stack->data[i] != NULL) {
+            stack->data[new_count++] = stack->data[i];
+        }
+    }
+
+    // Update the count to reflect the new number of elements.
+    stack->count = new_count;
+
+    // Zero out the remaining slots (optional, but safe).
+    for (size_t i = new_count; i < stack->capacity; ++i) {
+        stack->data[i] = NULL;
+    }
+}
