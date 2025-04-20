@@ -15,6 +15,7 @@ stack_t *stack_new(size_t capacity) {
     stack->data = malloc(stack->capacity * sizeof(void *));
     if (stack->data == NULL) {
         fprintf(stderr, "Error: Memory allocation failed for data.\n");
+        free(stack);
         return NULL;
     }
 
