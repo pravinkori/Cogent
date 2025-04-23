@@ -24,3 +24,18 @@ vm_t *vm_new() {
 
     return vm;
 }
+
+void vm_free(vm_t *vm) {
+    if (vm == NULL) {
+        return;
+    }
+
+    for (int i = 0; i < vm->frames->count; i++) {
+        frame_free(vm->frames->data[i]);
+    }
+
+    stack_free(vm->frames);
+    stack_free(vm->objects);
+
+    free(vm);
+}
