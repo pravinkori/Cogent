@@ -1,5 +1,7 @@
 #include <stdio.h>
 
+#include "../include/object.h"
+#include "../include/stack.h"
 #include "../include/vm.h"
 
 vm_t *vm_new() {
@@ -73,4 +75,14 @@ void frame_free(frame_t *frame) {
 
     stack_free(frame->references);
     free(frame);
+}
+
+void vm_track_object(vm_t *vm, object_t *object) {
+    if (vm == NULL || object == NULL) {
+        fprintf(stderr, "Warning: vm or object was NULL in vm_track_object.\n");
+        return;
+    }
+
+    fprintf(stdout, "Tracking object: %p\n", (void *)object);
+    stack_push(vm->objects, (void *)object);
 }
